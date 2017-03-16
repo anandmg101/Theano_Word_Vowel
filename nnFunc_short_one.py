@@ -2,6 +2,7 @@ import theano
 import theano.tensor as T
 import theano.tensor.nnet as nnet
 import numpy as np
+import utils_short_one as utils
 
 X = T.dmatrix()
 y = T.dmatrix()
@@ -41,6 +42,7 @@ cost = theano.function(inputs=[X, y], outputs=fc, updates=[
         (theta2, grad_desc(fc, theta2)),
         (theta3, grad_desc(fc, theta3))])
 
+# Training Functions----------------------------------------------------------------
 cur_cost = 0        
 
 for i in range(2000):
@@ -50,4 +52,30 @@ for i in range(2000):
         y.shape = (1,75)
         cur_cost = cost(x,y)
     if i % 50 == 0: print('Cost: %s' % (cur_cost,))
+
+#Prediction functions ---------------------------------------------------------------
+X_pred = T.dmatrix()
+y_pred = T.dmatrix()
+
+def predict(X, w1, w2, w3):
+    m = X.shape[0]
+    b = T.ones((m,1))
+    a_1 = T.concatenate([b, X], axis=1)
+    z_2 = T.dot(a_1, T.transpose(w1))
+    a_2 = T.nnet.nnet.sigmoid(z_2)
+    a_2 = T.concatenate([b, a_2], axis=1)
+    z_3 = T.dot(a_2, T.transpose(w2))
+    a_3 = T.nnet.nnet.sigmoid(z_3)
+    a_3 = T.concatenate([b, a_3], axis=1)
+    z_4 = T.dot(a_3, T.transpose(w3))
+    h   = T.nnet.nnet.sigmoid(z_4)
+    return h
+
+p = predict(X_pred, theta1, theta2, theta3)
+pred = theano.function(inputs = [X_pred], outputs = p)
+
+def predictor(txt):
+    x_pred = utils.X_gen(txt)
+    y = pred(x_pred)
+    return utils.yx_gen(y)
         
