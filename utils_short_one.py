@@ -36,7 +36,7 @@ def f(x):   #convert txt to arrays
     'w': np.array([[0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]]),
     '' : np.array([[0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]])}[x]   
     
-def X_gen(txt):
+def X_gen(txt): #converts txt input to input array
     X_array = np.array([])
     
     for letter in txt:
@@ -50,3 +50,9 @@ def X_gen(txt):
             X_array = np.hstack((X_array,f("")))
     
     return (X_array)  
+
+def y_gen(y): #converts predicted array to output txt
+    for i in range(0,75,15): y[:,i:i+15] = (y[:,i:i+15] == y[:,i:i+15].max(axis=1)[:,None]).astype(int)
+    txt = ""
+    for i in range(0,75,15): txt = txt + g(y[:,i:i+15].ravel())
+    return (txt)
