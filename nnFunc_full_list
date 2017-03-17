@@ -7,10 +7,9 @@ import utils_short_one as utils
 X = T.dmatrix()
 y = T.dmatrix()
 
-X_input = np.genfromtxt('X.csv',delimiter=',') #35000x195
-y_input = np.genfromtxt('y.csv',delimiter=',')  #5000x75
+X_input, y_input = utils.generate_train_data()
 
-input_layer_size, hidden_layer_size_1, hidden_layer_size_2, y_size = 195, 15, 15, 75
+input_layer_size, hidden_layer_size_1, hidden_layer_size_2, y_size = 351, 15, 15, 297
 
 theta1 = theano.shared(np.array(np.random.rand(hidden_layer_size_1, (input_layer_size+1)), dtype=theano.config.floatX))
 theta2 = theano.shared(np.array(np.random.rand(hidden_layer_size_2, (hidden_layer_size_1+1)), dtype=theano.config.floatX))
@@ -48,8 +47,8 @@ cur_cost = 0
 for i in range(2000):
     for k in range(len(X_input)):
         x, y = X_input[k], y_input[k]
-        x.shape = (1,195)
-        y.shape = (1,75)
+        x.shape = (1,351)
+        y.shape = (1,297)
         cur_cost = cost(x,y)
     if i % 50 == 0: print('Cost: %s' % (cur_cost,))
 
